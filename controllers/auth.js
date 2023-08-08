@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 const Response = require("../utils/Response");
@@ -59,7 +60,18 @@ module.exports.authenticateUser = async (req, res) => {
       res.status(401).send(new Response(true, "Invalid credentials"));
       return;
     }
-    res.status(200).send(new Response(true, "OK", "Authenticated"));
+    const token = getJwtToken(user.id, user.email);
+    await User.update(
+      {
+        token,
+      },
+      {
+        where: {
+          email,
+        },
+      }
+    );
+    res.status(200).send(new Response(true, "OK", token));
   } catch (error) {
     throw new Error(error);
   }
@@ -82,4 +94,10 @@ module.exports.checkEmailAvailability = async (req, res) => {
     return;
   }
   res.status(200).send(new Response(true, "OK", true));
+};
+
+const getJwtToken = (id, email) => {
+  return jwt.sign({ id, email }, "5b9c0f3a9d7e4f2b1e8a7c6d3f0e1b8a", {
+    expiresIn: "1h",
+  });
 };

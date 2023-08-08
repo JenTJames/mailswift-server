@@ -27,6 +27,7 @@ app.use(errorRoutes.errorHandler);
 sequelize
   .sync({
     force: false, // True for drop and create tables on server reload
+    alter: false, // true if schema can be altered
   })
   .then(() => {
     app.listen(PORT, () => {
