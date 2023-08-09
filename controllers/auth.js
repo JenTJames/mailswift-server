@@ -60,7 +60,12 @@ module.exports.authenticateUser = async (req, res) => {
       res.status(401).send(new Response(true, "Invalid credentials"));
       return;
     }
-    const token = getJwtToken(user.id, user.email);
+    const token = getJwtToken(
+      user.id,
+      user.email,
+      user.firstname,
+      user.lastname
+    );
     await User.update(
       {
         token,
@@ -96,8 +101,12 @@ module.exports.checkEmailAvailability = async (req, res) => {
   res.status(200).send(new Response(true, "OK", true));
 };
 
-const getJwtToken = (id, email) => {
-  return jwt.sign({ id, email }, "5b9c0f3a9d7e4f2b1e8a7c6d3f0e1b8a", {
-    expiresIn: "1h",
-  });
+const getJwtToken = (id, email, firstname, lastname) => {
+  return jwt.sign(
+    { id, email, firstname, lastname },
+    "5b9c0f3a9d7e4f2b1e8a7c6d3f0e1b8a",
+    {
+      expiresIn: "1h",
+    }
+  );
 };
