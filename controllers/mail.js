@@ -3,6 +3,7 @@ const Response = require("../utils/Response");
 const Mail = require("../models/Mail");
 const userController = require("../controllers/user");
 
+// Fetches all mails received by a user
 module.exports.getReceivedMails = async (req, res) => {
   const { userId } = req.params;
   console.log(userId);
@@ -16,6 +17,7 @@ module.exports.getReceivedMails = async (req, res) => {
   res.sendStatus(200);
 };
 
+// sends a mail to a user
 module.exports.sendMail = async (req, res) => {
   const mail = req.body;
   if (!mail || !mail.subject || !mail.body || !mail.sender || !mail.receiver) {
