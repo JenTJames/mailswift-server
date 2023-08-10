@@ -6,10 +6,18 @@ const interceptor = require("../utils/interceptor");
 
 const router = express.Router();
 
+//TODO: Uncomment interceptor for route protection
+
 router.get(
   "/received/users/:userId",
-  interceptor,
+  // interceptor,
   mailController.getReceivedMails
+);
+
+router.post(
+  "/",
+  // interceptor,
+  mailController.sendMail
 );
 
 module.exports = router;
