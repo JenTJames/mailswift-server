@@ -1,33 +1,36 @@
 const { DataTypes } = require("sequelize");
-
 const sequelize = require("../utils/database");
 
-const User = sequelize.define("user", {
+const Mail = sequelize.define("mail", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
     autoIncrement: true,
   },
-  firstname: {
+  subject: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  lastname: {
-    type: DataTypes.STRING,
+  body: {
+    type: DataTypes.TEXT,
     allowNull: false,
   },
-  email: {
-    type: DataTypes.STRING,
+  isRead: {
+    type: DataTypes.BOOLEAN,
     allowNull: false,
+    defaultValue: false,
   },
-  password: {
-    type: DataTypes.STRING,
+  isSpam: {
+    type: DataTypes.BOOLEAN,
     allowNull: false,
+    defaultValue: false,
   },
-  token: {
-    type: DataTypes.STRING,
+  isTrash: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
   },
 });
 
-module.exports = User;
+module.exports = Mail;
