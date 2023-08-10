@@ -6,15 +6,21 @@ const userController = require("../controllers/user");
 // Fetches all mails received by a user
 module.exports.getReceivedMails = async (req, res) => {
   const { userId } = req.params;
-  console.log(userId);
   try {
     const user = await userController.getUser(userId);
-    console.log(user);
+    const mails = await Mail.findAll({
+      include: "sender",
+      where: {
+        receiverId: user.id,
+      },
+    });
+    let transformedMails = mails.map((mail) => getMailDTO(mail));
+    res.status(200).send(new Response(true, "OK", transformedMails));
   } catch (error) {
+    console.log(error);
     error.message = "The user with ID " + userId + " does not exist";
     throw new Error(error);
   }
-  res.sendStatus(200);
 };
 
 // sends a mail to a user
@@ -67,4 +73,19 @@ module.exports.sendMail = async (req, res) => {
     error.message = "Could not send the mail";
     throw new Error(error);
   }
+};
+
+// Creates a mailDTO out of Mail object
+const getMailDTO = (mail) => {
+  return {
+    id: mail.id,
+    subject: mail.subject,
+    body: mail.body,
+    sentAt: mail.createdAt,
+    sender: {
+      id: mail.sender.id,
+      name: mail.sender.firstname + " " + mail.sender.lastname,
+      email: mail.sender.email,
+    },
+  };
 };

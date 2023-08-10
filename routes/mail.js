@@ -9,7 +9,7 @@ const router = express.Router();
 //TODO: Uncomment interceptor for route protection
 
 router.get(
-  "/received/users/:userId",
+  "/inbox/users/:userId",
   // interceptor,
   mailController.getReceivedMails
 );
