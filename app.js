@@ -52,8 +52,26 @@ sequelize
     alter: false, // True if schema can be altered
   })
   .then(() => {
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log("Server running on port " + PORT);
+    });
+    const io = require("./utils/socket").init(server);
+    io.on("connection", (socket) => {
+      const userId = socket.handshake.query.userId;
+      User.findOne({
+        where: {
+          id: userId,
+        },
+      })
+        .then((user) => {
+          console.log(user?.id + " Connected!");
+          return user?.update({
+            socketId: socket.id,
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     });
   })
   .catch((error) => {

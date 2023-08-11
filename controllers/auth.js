@@ -78,6 +78,7 @@ module.exports.authenticateUser = async (req, res) => {
     );
     res.status(200).send(new Response(true, "OK", token));
   } catch (error) {
+    console.log(error);
     throw new Error(error);
   }
 };
@@ -101,9 +102,9 @@ module.exports.checkEmailAvailability = async (req, res) => {
   res.status(200).send(new Response(true, "OK", true));
 };
 
-const getJwtToken = (id, email, firstname, lastname) => {
+const getJwtToken = (id, email, firstname, lastname, socketId) => {
   return jwt.sign(
-    { id, email, firstname, lastname },
+    { id, email, firstname, lastname, socketId },
     "5b9c0f3a9d7e4f2b1e8a7c6d3f0e1b8a",
     {
       expiresIn: "1h",

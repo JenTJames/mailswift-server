@@ -27,6 +27,11 @@ const User = sequelize.define("user", {
   },
   token: {
     type: DataTypes.STRING,
+    unique: true,
+  },
+  socketId: {
+    type: DataTypes.STRING,
+    unique: true,
   },
 });
 
