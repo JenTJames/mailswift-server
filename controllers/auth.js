@@ -34,7 +34,8 @@ module.exports.saveUser = async (req, res) => {
     res.status(201).send(new Response(true, "OK", savedUser.id));
   } catch (error) {
     error.message = "Could not save the user";
-    throw new Error(error);
+    const err = new Error(error);
+    next(err);
   }
 };
 
@@ -78,8 +79,9 @@ module.exports.authenticateUser = async (req, res) => {
     );
     res.status(200).send(new Response(true, "OK", token));
   } catch (error) {
-    console.log(error);
-    throw new Error(error);
+    error.message = "Authentication Failed!";
+    const err = new Error(error);
+    next(err);
   }
 };
 
