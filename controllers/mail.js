@@ -17,9 +17,9 @@ module.exports.getReceivedMails = async (req, res) => {
     let transformedMails = mails.map((mail) => getMailDTO(mail));
     res.status(200).send(new Response(true, "OK", transformedMails));
   } catch (error) {
-    console.log(error);
+    const err = new Error(error);
     error.message = "The user with ID " + userId + " does not exist";
-    throw new Error(error);
+    next(err);
   }
 };
 
@@ -70,8 +70,9 @@ module.exports.sendMail = async (req, res) => {
     savedMail.setReceiver(receiver);
     res.status(201).send(new Response(true, "Mail send", savedMail.id));
   } catch (error) {
+    const err = new Error(error);
     error.message = "Could not send the mail";
-    throw new Error(error);
+    next(err);
   }
 };
 

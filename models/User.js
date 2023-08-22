@@ -29,10 +29,6 @@ const User = sequelize.define("user", {
     type: DataTypes.STRING,
     unique: true,
   },
-  socketId: {
-    type: DataTypes.STRING,
-    unique: true,
-  },
 });
 
 module.exports = User;
