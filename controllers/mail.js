@@ -12,6 +12,8 @@ module.exports.getReceivedMails = async (req, res) => {
       include: "sender",
       where: {
         receiverId: user.id,
+        isSpam: false,
+        isTrash: false,
       },
     });
     let transformedMails = mails.map((mail) => getMailDTO(mail));
@@ -99,9 +101,8 @@ module.exports.flagMail = async (req, res) => {
     res.status(400).send(new Response(false, "Invalid flag or value received"));
     return;
   }
-  let flaggedMail;
   if (flag.toLowerCase() === "spam") {
-    flaggedMail = await Mail.update(
+    await Mail.update(
       { isSpam: flagValue },
       {
         where: {
@@ -110,7 +111,7 @@ module.exports.flagMail = async (req, res) => {
       }
     );
   } else {
-    flaggedMail = await Mail.update(
+    await Mail.update(
       { isTrash: flagValue },
       {
         where: {
@@ -119,7 +120,6 @@ module.exports.flagMail = async (req, res) => {
       }
     );
   }
-  console.log(flaggedMail);
   res.status(200).send(new Response(true, "OK"));
 };
 
