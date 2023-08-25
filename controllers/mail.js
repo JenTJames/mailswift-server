@@ -90,6 +90,39 @@ module.exports.getMail = async (req, res) => {
   res.status(200).send(new Response(true, "OK", mailDTO));
 };
 
+// Flags a mail as either spam or moves it to trash
+module.exports.flagMail = async (req, res) => {
+  const { mailId } = req.params;
+  const { flag } = req.query;
+  const { flagValue } = req.query;
+  if (!flag || !flagValue) {
+    res.status(400).send(new Response(false, "Invalid flag or value received"));
+    return;
+  }
+  let flaggedMail;
+  if (flag.toLowerCase() === "spam") {
+    flaggedMail = await Mail.update(
+      { isSpam: flagValue },
+      {
+        where: {
+          id: mailId,
+        },
+      }
+    );
+  } else {
+    flaggedMail = await Mail.update(
+      { isTrash: flagValue },
+      {
+        where: {
+          id: mailId,
+        },
+      }
+    );
+  }
+  console.log(flaggedMail);
+  res.status(200).send(new Response(true, "OK"));
+};
+
 // Creates a mailDTO out of Mail object
 const getMailDTO = (mail) => {
   return {

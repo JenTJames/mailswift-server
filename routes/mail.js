@@ -20,6 +20,12 @@ router.post(
   mailController.sendMail
 );
 
+router.put(
+  "/:mailId",
+  // interceptor,
+  mailController.flagMail
+);
+
 router.get(
   "/:mailId",
   // interceptor,
