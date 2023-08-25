@@ -20,4 +20,10 @@ router.post(
   mailController.sendMail
 );
 
+router.get(
+  "/:mailId",
+  // interceptor,
+  mailController.getMail
+);
+
 module.exports = router;

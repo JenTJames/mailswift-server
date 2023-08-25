@@ -76,6 +76,20 @@ module.exports.sendMail = async (req, res) => {
   }
 };
 
+// Fetches a mail by ID
+module.exports.getMail = async (req, res) => {
+  const { mailId } = req.params;
+  const mail = await Mail.findByPk(mailId, {
+    include: "sender",
+  });
+  if (!mail)
+    res
+      .status(404)
+      .send(new Response(false, "Could not locate the target mail"));
+  const mailDTO = getMailDTO(mail.dataValues);
+  res.status(200).send(new Response(true, "OK", mailDTO));
+};
+
 // Creates a mailDTO out of Mail object
 const getMailDTO = (mail) => {
   return {
