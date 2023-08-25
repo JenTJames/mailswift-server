@@ -90,6 +90,18 @@ module.exports.getMail = async (req, res) => {
       .send(new Response(false, "Could not locate the target mail"));
   const mailDTO = getMailDTO(mail.dataValues);
   res.status(200).send(new Response(true, "OK", mailDTO));
+
+  // Mark the mail as read
+  Mail.update(
+    {
+      isRead: true,
+    },
+    {
+      where: {
+        id: mailId,
+      },
+    }
+  );
 };
 
 // Flags a mail as either spam or moves it to trash
