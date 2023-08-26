@@ -26,6 +26,12 @@ router.get(
   mailController.getSpammedMails
 );
 
+router.get(
+  "/trash/users/:userId",
+  // interceptor,
+  mailController.getTrashMails
+);
+
 router.post(
   "/",
   // interceptor,

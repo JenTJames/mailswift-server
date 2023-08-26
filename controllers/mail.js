@@ -67,6 +67,27 @@ module.exports.getSpammedMails = async (req, res, next) => {
   }
 };
 
+// Fetches all mails trashed by a user
+module.exports.getTrashMails = async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    const user = await userController.getUser(userId);
+    const mails = await Mail.findAll({
+      include: "sender",
+      where: {
+        receiverId: user.id,
+        isTrash: true,
+      },
+    });
+    let transformedMails = mails.map((mail) => getMailDTO(mail));
+    res.status(200).send(new Response(true, "OK", transformedMails));
+  } catch (error) {
+    const err = new Error(error);
+    error.message = "The user with ID " + userId + " does not exist";
+    next(err);
+  }
+};
+
 // sends a mail to a user
 module.exports.sendMail = async (req, res, next) => {
   const mail = req.body;
