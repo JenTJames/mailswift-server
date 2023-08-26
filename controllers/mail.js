@@ -4,7 +4,7 @@ const Mail = require("../models/Mail");
 const userController = require("../controllers/user");
 
 // Fetches all mails received by a user
-module.exports.getReceivedMails = async (req, res) => {
+module.exports.getReceivedMails = async (req, res, next) => {
   const { userId } = req.params;
   try {
     const user = await userController.getUser(userId);
@@ -25,8 +25,28 @@ module.exports.getReceivedMails = async (req, res) => {
   }
 };
 
+// Fetches all mails sent by a user
+module.exports.getSentMails = async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    const user = await userController.getUser(userId);
+    const mails = await Mail.findAll({
+      include: "receiver",
+      where: {
+        senderId: user.id,
+      },
+    });
+    let transformedMails = mails.map((mail) => getMailDTO(mail.dataValues));
+    res.status(200).send(new Response(true, "OK", transformedMails));
+  } catch (error) {
+    const err = new Error(error);
+    err.message = "The user with ID " + userId + " does not exist";
+    next(err);
+  }
+};
+
 // sends a mail to a user
-module.exports.sendMail = async (req, res) => {
+module.exports.sendMail = async (req, res, next) => {
   const mail = req.body;
   if (!mail || !mail.subject || !mail.body || !mail.sender || !mail.receiver) {
     res
@@ -144,9 +164,14 @@ const getMailDTO = (mail) => {
     isRead: mail.isRead,
     sentAt: mail.createdAt,
     sender: {
-      id: mail.sender.id,
-      name: mail.sender.firstname + " " + mail.sender.lastname,
-      email: mail.sender.email,
+      id: mail.sender?.id,
+      name: mail.sender?.firstname + " " + mail.sender?.lastname,
+      email: mail.sender?.email,
+    },
+    receiver: {
+      id: mail.receiver?.id,
+      name: mail.receiver?.firstname + " " + mail.receiver?.lastname,
+      email: mail.receiver?.email,
     },
   };
 };

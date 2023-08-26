@@ -14,6 +14,12 @@ router.get(
   mailController.getReceivedMails
 );
 
+router.get(
+  "/sent-mails/users/:userId",
+  // interceptor,
+  mailController.getSentMails
+);
+
 router.post(
   "/",
   // interceptor,
