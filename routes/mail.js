@@ -20,6 +20,12 @@ router.get(
   mailController.getSentMails
 );
 
+router.get(
+  "/spam/users/:userId",
+  // interceptor,
+  mailController.getSpammedMails
+);
+
 router.post(
   "/",
   // interceptor,
