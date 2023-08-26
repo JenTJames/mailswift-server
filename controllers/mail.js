@@ -141,6 +141,7 @@ const getMailDTO = (mail) => {
     id: mail.id,
     subject: mail.subject,
     body: mail.body,
+    isRead: mail.isRead,
     sentAt: mail.createdAt,
     sender: {
       id: mail.sender.id,
