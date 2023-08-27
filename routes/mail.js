@@ -9,6 +9,12 @@ const router = express.Router();
 //TODO: Uncomment interceptor for route protection
 
 router.get(
+  "/:mailId",
+  // interceptor,
+  mailController.getMail
+);
+
+router.get(
   "/inbox/users/:userId",
   // interceptor,
   mailController.getReceivedMails
@@ -44,10 +50,10 @@ router.put(
   mailController.flagMail
 );
 
-router.get(
+router.delete(
   "/:mailId",
   // interceptor,
-  mailController.getMail
+  mailController.deleteMail
 );
 
 module.exports = router;

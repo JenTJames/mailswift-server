@@ -198,6 +198,32 @@ module.exports.flagMail = async (req, res) => {
   res.status(200).send(new Response(true, "OK"));
 };
 
+//Deletes a mail entirely
+module.exports.deleteMail = async (req, res, next) => {
+  const { mailId } = req.params;
+  try {
+    const mail = await Mail.findOne({
+      where: {
+        id: mailId,
+      },
+    });
+    mail.destroy();
+    res.status(200).send(new Response(true, "Deletion success"));
+    try {
+    } catch (error) {
+      const err = new Error(error);
+      err.message =
+        "Something went wrong while deleting the mail with id: " + mailId;
+      next(err);
+    }
+  } catch (error) {
+    const err = new Error(error);
+    err.code = 400;
+    err.message = "The mail with ID " + mailId + " does not exist";
+    next(err);
+  }
+};
+
 // Creates a mailDTO out of Mail object
 const getMailDTO = (mail) => {
   return {
